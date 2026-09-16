@@ -32,12 +32,8 @@ button{cursor:pointer;background:none;border:none}
   background:var(--card);border-bottom:1px solid var(--line);
 }
 .brand{display:flex;align-items:center;gap:9px;min-width:0}
-.flag{position:relative;display:flex;width:22px;height:22px;border-radius:3px;overflow:hidden;flex:0 0 auto;background:#0F7B52;align-items:center;justify-content:center}
-.flag::after{content:"\0636";color:#fff;font:700 15px/1 Georgia,serif}
-.flag i{display:none}
-.flag i:nth-child(1){display:none}
-.flag i:nth-child(2){display:none}
-.flag i:nth-child(3){display:none}
+.flag{position:relative;display:flex;width:22px;height:22px;border-radius:3px;overflow:hidden;flex:0 0 auto;background:#006C35;align-items:center;justify-content:center;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+.flag svg{display:block;width:100%;height:100%}
 .brand-txt{min-width:0}
 .brand-txt b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .brand-txt small{display:block;font-size:11px;color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
