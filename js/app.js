@@ -31,6 +31,16 @@
       .replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
 
+  /* 词性 → 板块分类：名词 / 动词 / 虚词 */
+  var POS_ORDER = ["wn", "wv", "wp"];                 // 板块渲染顺序：名词 → 动词 → 虚词
+  var POS_TITLE = { wn: "名词", wv: "动词", wp: "虚词" };
+  function posCat(pos) {
+    if (pos === "名") return "wn";
+    if (pos === "动") return "wv";
+    if (pos === "虚") return "wp";
+    return "wn";                                       // 未知词性默认归入名词，避免落空
+  }
+
   /* ---------- localStorage ---------- */
   function loadLS() {
     try { state.done = JSON.parse(localStorage.getItem(LS_DONE) || "{}"); } catch (e) { state.done = {}; }
@@ -127,16 +137,35 @@
 
       var gr = META.grupos[state.g];
       var key = pm.gid + "-" + sm.no, isDone = !!state.done[key];
+
+      /* 按词性统计各板块数量（用于顶部摘要） */
+      var nNoun = 0, nVerb = 0, nPart = 0;
+      sec.w.forEach(function (it) {
+        var k = posCat(it[2]);
+        if (k === "wn") nNoun++; else if (k === "wv") nVerb++; else nPart++;
+      });
+      var metaParts = [];
+      if (nNoun) metaParts.push("名词 " + nNoun);
+      if (nVerb) metaParts.push("动词 " + nVerb);
+      if (nPart) metaParts.push("虚词 " + nPart);
+
       var h = '<div class="crumb">' + esc(gr.name) + ' › ' + esc(pm.name) + '</div>'
         + '<h1 class="sec-title">' + esc(sm.name) + '</h1>'
-        + '<div class="sec-meta"><span>单词 ' + sec.w.length + '</span>'
+        + '<div class="sec-meta"><span>' + metaParts.join(" · ") + '</span>'
         + '<span>句子与短语 ' + sec.s.length + '</span>'
         + '<span>谚语格言 ' + sec.e.length + '</span>'
         + '<button class="btn-done' + (isDone ? " on" : "") + '" id="doneBtn">'
         + (isDone ? "✓ 已学完" : "标记学完") + '</button></div>'
         + navRow();
 
-      if (sec.w.length) h += block("单词 · 名词 / 动词 / 虚词", "w", sec.w);
+      /* 单词按词性拆分为 名词 / 动词 / 虚词 三个板块 */
+      if (sec.w.length) {
+        var wb = { wn: [], wv: [], wp: [] };
+        sec.w.forEach(function (it) { wb[posCat(it[2])].push(it); });
+        POS_ORDER.forEach(function (k) {
+          if (wb[k].length) h += block(POS_TITLE[k], k, wb[k]);
+        });
+      }
       if (sec.s.length) h += blockSent(sec.s);
       if (sec.e.length) h += block("谚语格言", "e", sec.e);
       if (!sec.w.length && !sec.s.length && !sec.e.length)
@@ -260,8 +289,10 @@
 
   function unitsOf(gid, sec) {
     var out = [];
-    sec.w.forEach(function (it, i) {
-      out.push({ id: uid(gid, sec.no, "w", i), kind: "w", es: it[1], zh: it[0], ae: it[3], az: it[4] });
+    var wc = { wn: 0, wv: 0, wp: 0 };
+    sec.w.forEach(function (it) {
+      var k = posCat(it[2]);
+      out.push({ id: uid(gid, sec.no, k, wc[k]++), kind: k, es: it[1], zh: it[0], ae: it[3], az: it[4] });
     });
     sec.s.forEach(function (it, i) {
       out.push({ id: uid(gid, sec.no, "s", i), kind: "s", es: it[0], zh: it[1], ae: it[3], az: it[4] });
