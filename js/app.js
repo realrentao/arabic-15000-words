@@ -224,11 +224,16 @@
     arr.forEach(function (it, i) {
       var id = uid(gid, sno, kind, i);
       h += '<div class="sent" id="' + id + '">'
-        + '<div class="s-es" data-a="' + AUDIO + it[3] + '">' + esc(it[0]) + '</div>'
+        + '<div class="s-body">'
+        + '<div class="s-es" data-a="' + AUDIO + it[3] + '">' + esc(it[1]) + '</div>'
         + (it[6] ? '<div class="s-ipa pron">/' + esc(it[6]) + '/</div>' : '')
-        + '<div class="s-zh" data-a="' + AUDIO + it[4] + '">' + esc(it[1]) + '</div>'
+        + '<div class="s-zh" data-a="' + AUDIO + it[4] + '">' + esc(it[0]) + '</div>'
         + (it[5] ? '<div class="s-py pron">' + esc(it[5]) + '</div>' : '')
-        + (it[2] ? '<div class="s-src">' + esc(it[2]) + '</div>' : '') + '</div>';
+        + (it[2] ? '<div class="s-src">' + esc(it[2]) + '</div>' : '')
+        + '</div>'
+        + '<button class="spk" data-a="' + AUDIO + it[3] + '" title="阿语发音">🔊</button>'
+        + '<button class="spk" data-a="' + AUDIO + it[4] + '" title="中文发音">汉</button>'
+        + '</div>';
     });
     return h + '</div>';
   }
@@ -295,7 +300,7 @@
       out.push({ id: uid(gid, sec.no, k, wc[k]++), kind: k, es: it[1], zh: it[0], ae: it[3], az: it[4] });
     });
     sec.s.forEach(function (it, i) {
-      out.push({ id: uid(gid, sec.no, "s", i), kind: "s", es: it[0], zh: it[1], ae: it[3], az: it[4] });
+      out.push({ id: uid(gid, sec.no, "s", i), kind: "s", es: it[1], zh: it[0], ae: it[3], az: it[4] });
     });
     sec.e.forEach(function (it, i) {
       out.push({ id: uid(gid, sec.no, "e", i), kind: "e", es: it[1], zh: it[0], ae: it[3], az: it[4] });
