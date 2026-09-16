@@ -112,8 +112,7 @@
         pt.secs.forEach(function (s) { if (state.done[pt.gid + "-" + s.no]) nd++; });
       });
     });
-    el("sideCount").textContent = META.grupos.length + " 篇 · " + nv + " 大类 · " + ns
-      + " 小节 · 已学 " + nd;
+    el("sideCount").textContent = META.grupos.length + " 册 · " + nv + " 课";
   }
 
   /* ---------- 内容 ---------- */
