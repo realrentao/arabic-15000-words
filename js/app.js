@@ -281,10 +281,12 @@
         cb(sec ? unitsOf(curParte().gid, sec) : []);
       });
     } else if (scope === "parte") {
-      loadParte(curParte().gid, function (d) {
-        if (!d) { cb([]); return; }
+      loadAll(function () {
         var out = [];
-        d.secs.forEach(function (s) { out = out.concat(unitsOf(d.gid, s)); });
+        META.grupos[state.g].partes.forEach(function (pt) {
+          var d = DATA[pt.gid]; if (!d) return;
+          d.secs.forEach(function (s) { out = out.concat(unitsOf(pt.gid, s)); });
+        });
         cb(out);
       });
     } else {
@@ -394,7 +396,7 @@
     if (P.dirty || !P.list.length) {
       var sc = el("scopeSel").value;
       el("plLabel").textContent = sc === "all" ? "正在准备全书播放…"
-        : sc === "parte" ? "正在准备本大类播放…" : "准备中…";
+        : sc === "parte" ? "正在准备本册播放…" : "正在准备本课播放…";
       buildUnits(sc, function () { P.dirty = false; expand(); doStart(); });
     } else doStart();
   }
@@ -676,8 +678,13 @@
         cb(sec ? [{ gid: curParte().gid, sec: sec }] : []);
       });
     } else if (scope === "parte") {
-      loadParte(curParte().gid, function (d) {
-        cb(d ? d.secs.map(function (s) { return { gid: curParte().gid, sec: s }; }) : []);
+      loadAll(function () {
+        var list = [];
+        META.grupos[state.g].partes.forEach(function (pt) {
+          var d = DATA[pt.gid]; if (!d) return;
+          d.secs.forEach(function (s) { list.push({ gid: pt.gid, sec: s }); });
+        });
+        cb(list);
       });
     } else {
       loadAll(function () {
@@ -727,7 +734,7 @@
       study.items = items; study.i = 0; study.total = items.length;
       study.known = 0; study.unknown = 0; study.cur = null;
       if (!items.length) {
-        el("studyBody").innerHTML = '<div class="empty">本节暂无可学习词条</div>';
+        el("studyBody").innerHTML = '<div class="empty">本课暂无可学习词条</div>';
         el("studyFoot").innerHTML = "";
         return;
       }
