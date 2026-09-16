@@ -317,6 +317,7 @@
       P.units.forEach(function (u) { L.push({ src: AUDIO + u.az, uid: u.id, lang: "zh" }); });
     }
     P.list = L; P.i = 0;
+    if (el("shuffleChk").checked) shuffle(P.list);
   }
 
   function buildUnits(scope, cb) { collect(scope, function (u) { P.units = u; if (cb) cb(); }); }
@@ -564,6 +565,7 @@
     el("nextBtn").onclick = function () { jumpUnit(1); };
     el("modeSel").onchange = function () { P.dirty = true; expand(); P.i = 0; updateProgress(); };
     el("scopeSel").onchange = function () { P.dirty = true; pausePlay(); P.i = 0; updateProgress(); };
+    el("shuffleChk").onchange = function () { P.dirty = true; pausePlay(); P.i = 0; updateProgress(); };
     el("rateSel").onchange = function () {
       P.players.forEach(function (a) { a.playbackRate = rate(); });
     };
