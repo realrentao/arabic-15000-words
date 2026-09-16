@@ -88,7 +88,8 @@
         h += '<div class="parte-item' + (openP ? " open" : "") + '" data-g="' + gi + '" data-p="' + pi + '">'
           + '<div class="parte-hd" data-g="' + gi + '" data-p="' + pi + '">'
           + '<span class="caret">▶</span><span class="pno">' + pt.no + '</span>'
-          + '<span class="pname">' + esc(pt.name) + '</span></div><div class="sec-list">';
+          + '<span class="pname">' + esc(pt.name) + '</span></div><div class="sec-list"'
+          + (pt.secs.length > 1 ? '' : ' style="display:none"') + '>';
         pt.secs.forEach(function (s, si) {
           var act = (gi === state.g && pi === state.p && si === state.s);
           h += '<div class="sec-item' + (act ? " active" : "") + '" data-g="' + gi
@@ -127,22 +128,21 @@
 
       var gr = META.grupos[state.g];
       var key = pm.gid + "-" + sm.no, isDone = !!state.done[key];
-      var h = '<div class="crumb">' + esc(gr.name) + ' › 第' + pm.no + '课'
-        + ' <b>' + esc(pm.name) + '</b> · 第' + sm.no + '节' + '</div>'
+      var h = '<div class="crumb">' + esc(gr.name) + ' › ' + esc(pm.name) + '</div>'
         + '<h1 class="sec-title">' + esc(sm.name) + '</h1>'
-        + '<div class="sec-meta"><span>终极分类词 ' + sec.w.length + '</span>'
-        + '<span>经典实用句 ' + sec.s.length + '</span>'
-        + '<span>词汇大拓展 ' + sec.e.length + '</span>'
+        + '<div class="sec-meta"><span>单词 ' + sec.w.length + '</span>'
+        + '<span>句子与短语 ' + sec.s.length + '</span>'
+        + '<span>谚语格言 ' + sec.e.length + '</span>'
         + '<button class="btn-done' + (isDone ? " on" : "") + '" id="doneBtn">'
         + (isDone ? "✓ 已学完" : "标记学完") + '</button></div>'
         + navRow();
 
-      if (sec.w.length) h += block("终极分类词", "w", sec.w);
+      if (sec.w.length) h += block("单词 · 名词 / 动词 / 虚词", "w", sec.w);
       if (sec.s.length) h += blockSent(sec.s);
-      if (sec.e.length) h += block("词汇大拓展", "e", sec.e);
+      if (sec.e.length) h += block("谚语格言", "e", sec.e);
       if (!sec.w.length && !sec.s.length && !sec.e.length)
-        h += '<div class="empty">本节内容待补充 —— 在 <code>data/sec/'
-          + pm.gid + '.js</code> 的对应小节里填入 w（终极分类词）/ s（经典实用句）/ e（词汇大拓展）即可显示。</div>';
+        h += '<div class="empty">本课内容待补充 —— 在 <code>data/sec/'
+          + pm.gid + '.js</code> 的对应小节里填入 w（单词）/ s（句子与短语）/ e（谚语格言）即可显示。</div>';
 
       content.innerHTML = h;
       window.scrollTo(0, 0);
@@ -190,7 +190,7 @@
 
   function blockSent(arr) {
     var gid = curParte().gid, sno = curSec().no, kind = "s";
-    var h = '<div class="block"><div class="block-hd"><h3>经典实用句</h3>'
+    var h = '<div class="block"><div class="block-hd"><h3>句子与短语</h3>'
       + '<span class="tag">' + arr.length + '</span>'
       + '<button class="mini-play" data-playblock="' + kind + '">▶ 连播本组</button></div>';
     arr.forEach(function (it, i) {
